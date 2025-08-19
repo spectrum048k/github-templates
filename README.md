@@ -28,6 +28,34 @@ Reference these actions in your repository workflows using the `uses:` syntax, e
     ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 ```
 
+## Example: Using the Reusable Terraform CI Workflow
+
+This example demonstrates how to call the reusable workflow from another repository using `workflow_call`.
+
+Create a workflow file in your repository (e.g., `.github/workflows/infra-ci.yml`):
+
+```yaml
+name: Infra CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    uses: spectrum048k/github-templates/.github/workflows/terraform-ci.yml@main
+    with:
+      working-directory: ./infra
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      checkov-path: ./infra
+```
+
+- Replace `spectrum048k/github-templates` with your repo name if different.
+- Adjust input values as needed for your project.
+- Make sure required secrets are set in your repository settings.
+
 ## Contributing
 
 Feel free to submit issues or pull requests to improve or add new workflows and actions.
