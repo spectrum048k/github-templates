@@ -6,21 +6,18 @@ on:
       working-directory:
         required: true
         type: string
-      ARM_CLIENT_ID:
-        required: true
-        type: string
-      ARM_CLIENT_SECRET:
-        required: true
-        type: string
-      ARM_TENANT_ID:
-        required: true
-        type: string
-      ARM_SUBSCRIPTION_ID:
-        required: true
-        type: string
       checkov-path:
         required: true
         type: string
+    secrets:
+      ARM_CLIENT_ID:
+        required: true
+      ARM_CLIENT_SECRET:
+        required: true
+      ARM_TENANT_ID:
+        required: true
+      ARM_SUBSCRIPTION_ID:
+        required: true
 
 jobs:
   terraform-plan:
@@ -30,10 +27,10 @@ jobs:
         uses: ../actions/terraform-plan-composite@main
         with:
           working-directory: ${{ inputs.working-directory }}
-          ARM_CLIENT_ID: ${{ inputs.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ inputs.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ inputs.ARM_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ inputs.ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
   checkov-scan:
     runs-on: ubuntu-latest
@@ -51,7 +48,7 @@ jobs:
         uses: ../actions/terraform-apply-composite@main
         with:
           working-directory: ${{ inputs.working-directory }}
-          ARM_CLIENT_ID: ${{ inputs.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ inputs.ARM_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ inputs.ARM_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ inputs.ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
