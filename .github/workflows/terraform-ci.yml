@@ -43,6 +43,7 @@ jobs:
   terraform-apply:
     needs: [terraform-plan, checkov-scan]
     runs-on: ubuntu-latest
+    if: needs.terraform-plan.outputs.tfplanExitCode == '2'
     steps:
       - name: Terraform Apply
         uses: spectrum048k/github-templates/.github/actions/terraform-apply-composite@main
