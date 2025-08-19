@@ -1,0 +1,59 @@
+name: 'Terraform Apply Composite Action'
+description: "This action applies a Terraform plan to provision resources in Azure, using the specified credentials and working directory."
+
+inputs:
+  working-directory:
+    description: 'Working directory for Terraform commands'
+    required: true
+  ARM_CLIENT_ID:
+    description: 'Azure Client ID'
+    required: true
+  ARM_CLIENT_SECRET:
+    description: 'Azure Client Secret'
+    required: true
+  ARM_TENANT_ID:
+    description: 'Azure Tenant ID'
+    required: true
+  ARM_SUBSCRIPTION_ID:
+    description: 'Azure Subscription ID'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download tfplan artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: tfplan
+        path: ${{ inputs.working-directory }}
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_wrapper: false
+
+    - name: Terraform Apply
+      id: tf-apply
+      run: |
+        terraform init
+        terraform apply -auto-approve tfplan
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        ARM_CLIENT_ID: ${{ inputs.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ inputs.ARM_CLIENT_SECRET }}
+        ARM_TENANT_ID: ${{ inputs.ARM_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.ARM_SUBSCRIPTION_ID }}
+
+    # create a string output of the apply result
+    - name: Create String Output
+      id: tf-apply-string
+      shell: bash
+      run: |
+        echo "Terraform apply completed successfully."
+        echo "applyResult=Terraform apply completed successfully." >> $GITHUB_OUTPUT
+        echo "applyResult=Terraform apply completed successfully."
+

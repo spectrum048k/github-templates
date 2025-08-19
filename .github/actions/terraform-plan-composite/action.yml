@@ -1,0 +1,86 @@
+name: 'Terraform Plan Composite Action'
+description: 'This action performs a Terraform plan operation, uploads the resulting plan file as an artifact, and generates a summary of the plan output for display in the GitHub Actions UI.'
+
+inputs:
+  working-directory:
+    description: 'Working directory for Terraform commands'
+    required: true
+  ARM_CLIENT_ID:
+    description: 'Azure Client ID'
+    required: true
+  ARM_CLIENT_SECRET:
+    description: 'Azure Client Secret'
+    required: true
+  ARM_TENANT_ID:
+    description: 'Azure Tenant ID'
+    required: true
+  ARM_SUBSCRIPTION_ID:
+    description: 'Azure Subscription ID'
+    required: true
+outputs:
+  tfplanExitCode:
+    description: 'Exit code from terraform plan'
+    value: ${{ steps.tf-plan.outputs.exitcode }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_wrapper: false
+
+    - name: Terraform Plan
+      id: tf-plan
+      run: |
+        export exitcode=0
+        terraform init
+        terraform plan -detailed-exitcode -out=tfplan || export exitcode=$?
+        echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+        echo "exitcode=$exitcode"
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        ARM_CLIENT_ID: ${{ inputs.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ inputs.ARM_CLIENT_SECRET }}
+        ARM_TENANT_ID: ${{ inputs.ARM_TENANT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ inputs.ARM_SUBSCRIPTION_ID }}
+
+    # Upload tfplan artifact if exit code is 2 (changes detected)
+    - name: Upload tfplan artifact
+      if: ${{ steps.tf-plan.outputs.exitcode == '2' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfplan
+        path: ${{ inputs.working-directory }}/tfplan
+
+    # Create string output of Terraform Plan
+    - name: Create String Output
+      id: tf-plan-string
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        TERRAFORM_PLAN=$(terraform show -no-color tfplan)
+        
+        delimiter="$(openssl rand -hex 8)"
+        echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
+        echo "## Terraform Plan Output" >> $GITHUB_OUTPUT
+        echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo '```terraform' >> $GITHUB_OUTPUT
+        echo "$TERRAFORM_PLAN" >> $GITHUB_OUTPUT
+        echo '```' >> $GITHUB_OUTPUT
+        echo "</details>" >> $GITHUB_OUTPUT
+        echo "${delimiter}" >> $GITHUB_OUTPUT
+
+    # Publish Terraform Plan as task summary
+    - name: Publish Terraform Plan to Task Summary
+      env:
+        SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY    
