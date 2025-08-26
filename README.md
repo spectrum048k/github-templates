@@ -23,7 +23,6 @@ Reference these actions in your repository workflows using the `uses:` syntax, e
   with:
     working-directory: ./infra
     ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-    ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
     ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
     ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 ```
@@ -46,7 +45,6 @@ jobs:
     with:
       working-directory: ./infra
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       checkov-path: ./infra
@@ -55,6 +53,12 @@ jobs:
 - Replace `spectrum048k/github-templates` with your repo name if different.
 - Adjust input values as needed for your project.
 - Make sure required secrets are set in your repository settings.
+
+## Federated Credentials
+
+These actions are designed to work with Azure federated credentials, allowing secure authentication without passing secrets. You should configure your Azure environment to use OIDC (OpenID Connect) federation with GitHub Actions. This enables the workflow to authenticate using the provided ARM_CLIENT_ID, ARM_TENANT_ID, and ARM_SUBSCRIPTION_ID, without needing ARM_CLIENT_SECRET.
+
+Refer to the [Azure documentation](https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation) for setup instructions.
 
 ## Contributing
 

@@ -8,9 +8,6 @@ inputs:
   ARM_CLIENT_ID:
     description: 'Azure Client ID'
     required: true
-  ARM_CLIENT_SECRET:
-    description: 'Azure Client Secret'
-    required: true
   ARM_TENANT_ID:
     description: 'Azure Tenant ID'
     required: true
@@ -44,7 +41,6 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       env:
         ARM_CLIENT_ID: ${{ inputs.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ inputs.ARM_CLIENT_SECRET }}
         ARM_TENANT_ID: ${{ inputs.ARM_TENANT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ inputs.ARM_SUBSCRIPTION_ID }}
 
