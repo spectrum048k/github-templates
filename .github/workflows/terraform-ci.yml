@@ -9,13 +9,15 @@ on:
       checkov-path:
         required: true
         type: string
-    secrets:
       ARM_CLIENT_ID:
         required: true
+        type: string
       ARM_TENANT_ID:
         required: true
+        type: string
       ARM_SUBSCRIPTION_ID:
         required: true
+        type: string
 
 jobs:
   terraform-plan:
@@ -25,9 +27,9 @@ jobs:
         uses: spectrum048k/github-templates/.github/actions/terraform-plan-composite@main
         with:
           working-directory: ${{ inputs.working-directory }}
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ inputs.ARM_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ inputs.ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ inputs.ARM_SUBSCRIPTION_ID }}
 
   checkov-scan:
     runs-on: ubuntu-latest
@@ -46,6 +48,6 @@ jobs:
         uses: spectrum048k/github-templates/.github/actions/terraform-apply-composite@main
         with:
           working-directory: ${{ inputs.working-directory }}
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ inputs.ARM_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ inputs.ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ inputs.ARM_SUBSCRIPTION_ID }}

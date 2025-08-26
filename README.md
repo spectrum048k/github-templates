@@ -22,9 +22,9 @@ Reference these actions in your repository workflows using the `uses:` syntax, e
   uses: spectrum048k/github-templates/.github/actions/terraform-plan-composite@main
   with:
     working-directory: ./infra
-    ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-    ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-    ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+    ARM_CLIENT_ID: ${{ inputs.ARM_CLIENT_ID }}
+    ARM_TENANT_ID: ${{ inputs.ARM_TENANT_ID }}
+    ARM_SUBSCRIPTION_ID: ${{ inputs.ARM_SUBSCRIPTION_ID }}
 ```
 
 ## Example: Using the Reusable Terraform CI Workflow
@@ -44,9 +44,9 @@ jobs:
     uses: spectrum048k/github-templates/.github/workflows/terraform-ci.yml@main
     with:
       working-directory: ./infra
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID: ${{ inputs.ARM_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ inputs.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ inputs.ARM_SUBSCRIPTION_ID }}
       checkov-path: ./infra
 ```
 

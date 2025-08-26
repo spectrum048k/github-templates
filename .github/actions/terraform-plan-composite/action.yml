@@ -8,9 +8,6 @@ inputs:
   ARM_CLIENT_ID:
     description: 'Azure Client ID'
     required: true
-  ARM_CLIENT_SECRET:
-    description: 'Azure Client Secret'
-    required: true
   ARM_TENANT_ID:
     description: 'Azure Tenant ID'
     required: true
