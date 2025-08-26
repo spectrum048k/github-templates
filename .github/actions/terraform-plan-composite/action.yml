@@ -36,7 +36,6 @@ runs:
         client-id: ${{ inputs.ARM_CLIENT_ID }}
         tenant-id: ${{ inputs.ARM_TENANT_ID }}
         subscription-id: ${{ inputs.ARM_SUBSCRIPTION_ID }}
-        enableOIDC: true
 
     - name: Terraform Plan
       id: tf-plan
