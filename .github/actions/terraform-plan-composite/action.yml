@@ -27,13 +27,6 @@ runs:
       with:
         terraform_wrapper: false
 
-    - name: Dir Details
-      run: |
-        ls
-        pwd
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
-
     - name: Terraform Plan
       id: tf-plan
       run: |
