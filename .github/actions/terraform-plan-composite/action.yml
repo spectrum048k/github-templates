@@ -33,9 +33,6 @@ runs:
     - name: Terraform Plan
       id: tf-plan
       run: |
-        echo "local dir details..."
-        ls
-        pwd
         export exitcode=0
         terraform init
         terraform plan -detailed-exitcode -out=tfplan || export exitcode=$?
