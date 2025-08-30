@@ -18,10 +18,18 @@ on:
       ARM_SUBSCRIPTION_ID:
         required: true
         type: string
+      runner:
+        required: false
+        type: string
+        default: ubuntu-latest
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   terraform-plan:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - name: Terraform Plan
         uses: spectrum048k/github-templates/.github/actions/terraform-plan-composite@main
@@ -32,7 +40,7 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ inputs.ARM_SUBSCRIPTION_ID }}
 
   checkov-scan:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - name: Checkov Scan
         uses: spectrum048k/github-templates/.github/actions/checkov-composite@main
@@ -41,7 +49,7 @@ jobs:
 
   terraform-apply:
     needs: [terraform-plan, checkov-scan]
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     if: needs.terraform-plan.outputs.tfplanExitCode == '2'
     steps:
       - name: Terraform Apply
