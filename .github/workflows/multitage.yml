@@ -30,9 +30,10 @@ jobs:
           if [[ "${{ github.event.inputs.always-run }}" == "true" ]]; then
             result=1
           else
-            result=$(./random-exit.sh || true)
+            ./random-exit.sh
+            result=$?
           fi
-          echo "Script output: $result"
+          echo "Script exit code: $result"
           echo "result=$result" >> $GITHUB_OUTPUT
 
   a2:
@@ -59,9 +60,10 @@ jobs:
           if [[ "${{ github.event.inputs.always-run }}" == "true" ]]; then
             result=1
           else
-            result=$(./random-exit.sh || true)
+            ./random-exit.sh
+            result=$?
           fi
-          echo "Script output: $result"
+          echo "Script exit code: $result"
           echo "result=$result" >> $GITHUB_OUTPUT
 
   b2:
