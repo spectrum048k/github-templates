@@ -2,6 +2,9 @@ name: Multi-Tag Example
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - '**'
 
 jobs:
   a1:
