@@ -2,6 +2,15 @@ name: Multi-Tag Example
 
 on:
   workflow_dispatch:
+    inputs:
+      always-run:
+        description: 'If true, jobs will always set their output to 1.'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
   push:
     branches:
       - '**'
@@ -18,7 +27,11 @@ jobs:
         id: random-step
         run: |
           chmod +x ./random-exit.sh
-          result=$(./random-exit.sh)
+          if [[ "${{ github.event.inputs.always-run }}" == "true" ]]; then
+            result=1
+          else
+            result=$(./random-exit.sh)
+          fi
           echo "Script output: $result"
           echo "result=$result" >> $GITHUB_OUTPUT
 
@@ -29,3 +42,24 @@ jobs:
     steps:
       - name: Print Hello with Job Name
         run: echo "hello a2"
+
+  b1:
+    needs: [a2]
+    if: always()
+    runs-on: ubuntu-latest
+    outputs:
+      random-exit: ${{ steps.random-step.outputs.result }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Run random-exit.sh
+        id: random-step
+        run: |
+          chmod +x ./random-exit.sh
+          if [[ "${{ github.event.inputs.always-run }}" == "true" ]]; then
+            result=1
+          else
+            result=$(./random-exit.sh)
+          fi
+          echo "Script output: $result"
+          echo "result=$result" >> $GITHUB_OUTPUT
