@@ -137,3 +137,15 @@ jobs:
     steps:
       - name: Print Hello with Job Name
         run: echo "hello d2"
+
+  debug:
+    needs: [a1, b1, c1, d1]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print all job outputs
+        run: |
+          echo "a1 random-exit: ${{ needs.a1.outputs.random-exit }}"
+          echo "b1 random-exit: ${{ needs.b1.outputs.random-exit }}"
+          echo "c1 random-exit: ${{ needs.c1.outputs.random-exit }}"
+          echo "d1 random-exit: ${{ needs.d1.outputs.random-exit }}"
