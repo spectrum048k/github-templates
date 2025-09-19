@@ -1,4 +1,4 @@
-name: Multi-Tag Example
+name: Multi-Stage Example
 
 on:
   workflow_dispatch:
@@ -63,3 +63,11 @@ jobs:
           fi
           echo "Script output: $result"
           echo "result=$result" >> $GITHUB_OUTPUT
+
+  b2:
+    needs: b1
+    if: needs.b1.outputs.random-exit == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello with Job Name
+        run: echo "hello b2"
