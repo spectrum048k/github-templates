@@ -26,6 +26,7 @@ jobs:
       - name: Run random-exit.sh
         id: random-step
         run: |
+          set +e
           chmod +x ./random-exit.sh
           if [[ "${{ github.event.inputs.always-run }}" == "true" ]]; then
             result=1
@@ -56,6 +57,7 @@ jobs:
       - name: Run random-exit.sh
         id: random-step
         run: |
+          set +e
           chmod +x ./random-exit.sh
           if [[ "${{ github.event.inputs.always-run }}" == "true" ]]; then
             result=1
