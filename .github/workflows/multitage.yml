@@ -75,3 +75,34 @@ jobs:
     steps:
       - name: Print Hello with Job Name
         run: echo "hello b2"
+
+  c1:
+    needs: [b2]
+    if: always()
+    runs-on: ubuntu-latest
+    outputs:
+      random-exit: ${{ steps.random-step.outputs.result }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Run random-exit.sh
+        id: random-step
+        run: |
+          set +e
+          chmod +x ./random-exit.sh
+          if [[ "${{ github.event.inputs.always-run }}" == "true" ]]; then
+            result=1
+          else
+            ./random-exit.sh
+            result=$?
+          fi
+          echo "Script exit code: $result"
+          echo "result=$result" >> $GITHUB_OUTPUT
+
+  c2:
+    needs: c1
+    if: needs.c1.outputs.random-exit == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello with Job Name
+        run: echo "hello c2"
