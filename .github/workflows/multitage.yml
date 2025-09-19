@@ -1,0 +1,28 @@
+name: Multi-Tag Example
+
+on:
+  workflow_dispatch:
+
+jobs:
+  a1:
+    runs-on: ubuntu-latest
+    outputs:
+      random-exit: ${{ steps.random-step.outputs.result }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Run random-exit.sh
+        id: random-step
+        run: |
+          chmod +x ./random-exit.sh
+          result=$(./random-exit.sh)
+          echo "Script output: $result"
+          echo "result=$result" >> $GITHUB_OUTPUT
+
+  a2:
+    needs: a1
+    if: needs.a1.outputs.random-exit == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello with Job Name
+        run: echo "hello a2"
