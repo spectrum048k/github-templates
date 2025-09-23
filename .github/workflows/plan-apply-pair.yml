@@ -1,0 +1,40 @@
+name: Plan and Apply Pair
+
+on:
+  workflow_call:
+    inputs:
+      always-run:
+        description: 'If true, jobs will always set their output to 1.'
+        required: false
+        default: 'false'
+        type: string
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      random-exit: ${{ steps.random-step.outputs.result }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Run random-exit.sh
+        id: random-step
+        run: |
+          set +e
+          chmod +x ./random-exit.sh
+          if [[ "${{ inputs.always-run }}" == "true" ]]; then
+            result=1
+          else
+            ./random-exit.sh
+            result=$?
+          fi
+          echo "Script exit code: $result"
+          echo "result=$result" >> $GITHUB_OUTPUT
+
+  apply:
+    needs: plan
+    if: needs.plan.outputs.random-exit == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello with Job Name
+        run: echo "hello apply"
