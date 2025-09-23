@@ -8,6 +8,10 @@ on:
         required: false
         default: 'false'
         type: string
+    outputs:
+      random-exit:
+        description: 'The result of the plan job'
+        value: ${{ jobs.plan.outputs.random-exit }}
 
 jobs:
   plan:
