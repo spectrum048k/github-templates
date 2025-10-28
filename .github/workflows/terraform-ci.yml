@@ -33,8 +33,11 @@ env:
 jobs:
   terraform-plan:
     runs-on: ${{ inputs.runner }}
+    outputs:
+      tfplanExitCode: ${{ steps.plan.outputs.tfplanExitCode }}
     steps:
       - name: Terraform Plan
+        id: plan
         uses: spectrum048k/github-templates/.github/actions/terraform-plan-composite@main
         with:
           working-directory: ${{ inputs.working-directory }}
@@ -55,6 +58,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     if: needs.terraform-plan.outputs.tfplanExitCode == '2'
     steps:
+      - name: Debug plan output
+        run: |
+          echo "Plan exit code: '${{ needs.terraform-plan.outputs.tfplanExitCode }}'"
       - name: Terraform Apply
         uses: spectrum048k/github-templates/.github/actions/terraform-apply-composite@main
         with:
